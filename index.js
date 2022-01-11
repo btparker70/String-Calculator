@@ -11,12 +11,12 @@ const stringCalculator = (input) => {
   
   function add(str, delimiter = ',') {
     let subStrings = str.split(delimiter).map( Number );
-    let sum = subStrings.reduce((a, b) => a + b);
+    let sum = subStrings.filter(num => num < 1000).reduce((a, b) => a + b);
     console.log(sum)
     return sum;
   }
 }
 
 // stringCalculator("//;\n1;3;4")
-// stringCalculator("1,2,3,4")
-stringCalculator("//@@@@@\n1@@@@@3@@@@@4")
+stringCalculator("1,2,3,4,999")
+// stringCalculator("//@@@@@\n1@@@@@3@@@@@4")
