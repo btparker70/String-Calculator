@@ -1,7 +1,22 @@
-const Add = (input) => {
-  let subStrings = input.split(",").map( Number );
-  let sum = subStrings.reduce((a, b) => a + b);
-  return sum;
+const stringCalculator = (input) => {
+  // customer delimiter
+  if (input.substring(0, 2) === '//') {
+    // grab delimiter before new line
+    let [ delimiter, parsedInput ] = [ 
+      input.substring(2).split(/\r\n|\n|\r/)[0], 
+      input.substring(2).split(/\r\n|\n|\r/)[1] 
+    ];
+    add(parsedInput, delimiter);
+  } else add(input)
+  
+  function add(str, delimiter = ',') {
+    let subStrings = str.split(delimiter).map( Number );
+    let sum = subStrings.reduce((a, b) => a + b);
+    console.log(sum)
+    return sum;
+  }
 }
 
-Add("1,2,3, ,5")
+// stringCalculator("//;\n1;3;4")
+// stringCalculator("1,2,3,4")
+stringCalculator("//@@@@@\n1@@@@@3@@@@@4")
