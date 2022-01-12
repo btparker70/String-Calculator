@@ -1,30 +1,31 @@
-const stringCalculator = (input) => {
-  if (typeof input !== 'string') throw new Error('Input must be a string');
+class StringCalculator {
+  constructor (input) {
+    this.input = input;
+    this.delimiters = `','`;
+    this.numbersToCompute = input;
+    this.checkCustomDelimiters(input);
+  }
 
-  // customer delimiter(s)?
-  if (input.substring(0, 2) === '//') {
-    // grab delimiter(s) before new line
-    let [ delimiters, parsedInput ] = [ 
-      input.substring(2).split(/\r\n|\n|\r/)[0], 
-      input.substring(2).split(/\r\n|\n|\r/)[1] 
-    ];
-    return add(parsedInput, delimiters);
-  } else return add(input)
-  
-  function add(str, delimiters = ',') {
-    let negativesCounter = [];
-
-    // multiple delimiters?
-    if (delimiters !== ',') {
-      delimiters = delimiters.replace(',', '');
-      delimiters = new RegExp(`[${delimiters}]`)
+  checkCustomDelimiters(input) {
+    // customer delimiter(s)?
+    if (input.substring(0, 2) === '//') {
+      // grab delimiter(s) before new line
+      this.delimiters = input.substring(2).split(/\r\n|\n|\r/)[0], 
+      this.numbersToCompute = input.substring(2).split(/\r\n|\n|\r/)[1] 
     }
 
+    // multiple delimiters?
+    let delimiters = this.delimiters;
+    if (delimiters !== ',') {
+      delimiters = delimiters.replace(',', '');
+      delimiters = new RegExp(`[,${delimiters}]`)
+    }
     // separate and convert values to numbers
-    let subStrings = str.split(delimiters).map( Number );
-    
+    this.numbersToCompute = this.numbersToCompute.split(delimiters).map( Number );
+
+    let negativesCounter = [];
     // check for <1000 and negatives
-    subStrings = subStrings.filter(function(item) {
+    this.numbersToCompute = this.numbersToCompute.filter(function(item) {
       if (item > 1000) return false;
       if (Math.sign(item) === -1) {
         negativesCounter.push(item);
@@ -33,12 +34,18 @@ const stringCalculator = (input) => {
     return true
     })
 
-    if (negativesCounter.length) throw new Error(`Negatives not allowed at ${negativesCounter.toString()}`)
+    // check if negative numbers in input
+    try {
+      negativesCounter.length
+    }
+    catch (e) {
+      throw new Error(`Negatives not allowed at ${negativesCounter.toString()}`);
+    }
+  }
 
-    let sum = subStrings.reduce((a, b) => a + b);
-
-    return sum;
+  add() {
+    return this.numbersToCompute.reduce((a, b) => a + b);
   }
 }
 
-module.exports = stringCalculator;
+module.exports = StringCalculator;

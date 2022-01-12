@@ -1,74 +1,98 @@
-const { expect, test } = require("@jest/globals");
-const stringCalculator = require("./index");
+const { expect, test, describe } = require("@jest/globals");
+const StringCalculator = require("./index");
 
-// input is type string
-test(" [1,2,3] to throw error input not type string", () => {
-  input = [2,5,1]
-  expect(() => stringCalculator(input)).toThrow('Input must be a string')
+describe('StringCalculator.add()', () => {
+  test(" return type of add() is number", () => {
+    input = '2,5,1'
+    const stringCalculator = new StringCalculator(input);
+    expect(typeof stringCalculator.add()).toBe('number')
+  })
 })
 
-// return type is type number
-test(" '2,5,1' to be type of integer", () => {
-  input = '2,5,1'
-  expect(typeof stringCalculator(input)).toBe('number')
+describe(" input with non-custom ',' delimiter", () => {
+  test(" '1,2,3' add to equal 6 ", () => {
+    input = '1,2,3'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(6)
+  })  
 })
 
-// input with non-custom ',' delimiter
-test(" '1,2,3' to equal 6 ", () => {
-  input = '1,2,3'
-  expect(stringCalculator(input)).toBe(6)
+describe("input with custom delimiter length of 1", () => {
+  test(" '//;\n1;3;4' add to equal 8 ", () => {
+    input = '//;\n1;3;4'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(8)
+  })  
 })
 
-// input with custom delimiter length 1
-test(" '//;\n1;3;4' to equal 8 ", () => {
-  input = '//;\n1;3;4'
-  expect(stringCalculator(input)).toBe(8)
+describe("input with custom delimiter of arbitrary length", () => {
+  test(" '//@@@@@\n1@@@@@5@@@@@4' add to equal 10 ", () => {
+    input = '//@@@@@\n1@@@@@5@@@@@4'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(10)
+  })  
 })
 
-// input with custom delimiter arbitrary length
-test(" '//@@@@@\n1@@@@@5@@@@@4' to equal 10 ", () => {
-  input = '//@@@@@\n1@@@@@5@@@@@4'
-  expect(stringCalculator(input)).toBe(10)
+describe("multiple delimiter types", () => {
+  test(" '//$,@\n1$2@3' add to equal 6 ", () => {
+    input = '//$,@\n1$2@3'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(6)
+  })  
 })
 
-// multiple delimiter types
-test(" '//$,@\n1$2@3' to equal 6 ", () => {
-  input = '//$,@\n1$2@3'
-  expect(stringCalculator(input)).toBe(6)
+describe("multiple delimiter types includes ',' ", () => {
+  test(" '//$,,\n4$3,1' add to equal 8 ", () => {
+    input = '//$,,\n4$3,1'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(8)
+  })  
 })
 
-// throw error if input contains negative values
-test(" '1,-2,-3,4,-3,-2' to throw Negatives not allowed at -2,-3,-3,-2 ", () => {
-  input = '1,-2,-3,4,-3,-2'
-  expect(() => stringCalculator(input)).toThrow("Negatives not allowed at -2,-3,-3,-2")
+describe("input with empty string interpreted as 0", () => {
+  test(" '1,2,3, ,5' add to equal 11", () => {
+    input = '1,2,3, ,5'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(11)
+  })  
 })
 
-// input with empty string interpreted as 0
-test(" '1,2,3, ,5' to equal 11", () => {
-  input = '1,2,3, ,5'
-  expect(stringCalculator(input)).toBe(11)
+describe("input ignores new lines", () => {
+  test(" '3,\n1,\n6' add to equal 10 ", () => {
+    input = '3,\n1,\n6'
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(10)
+  })  
 })
 
-// input ignores new lines
-test(" '3,\n1,\n6' to equal 10 ", () => {
-  input = '3,\n1,\n6'
-  expect(stringCalculator(input)).toBe(10)
-})
-
-// input ignores numbers greater than 1000
-test(" '999,1000,3000' to equal 1999 ", () => {
+describe("input ignores numbers greater than 1000", () => {
+test(" '999,1000,3000' add to equal 1999 ", () => {
   input = '999,1000,3000'
-  expect(stringCalculator(input)).toBe(1999)
-})
+      const stringCalculator = new StringCalculator(input);
+      expect(stringCalculator.add()).toBe(1999)
+    })  
+  })
 
-// check for multiple number cases
-test(" '//$$\n1$$1001$$ $$2' to equal 3 ", () => {
+describe("check for multiple number cases", () => {
+test(" '//$$\n1$$1001$$ $$2' add to equal 3 ", () => {
   input = '//$$\n1$$1001$$ $$2'
-  expect(stringCalculator(input)).toBe(3)
+    const stringCalculator = new StringCalculator(input);
+    expect(stringCalculator.add()).toBe(3)
+  })  
 })
 
-// input empty string 
-test(" '' to equal 0 ", () => {
-  input = ''
-  expect(stringCalculator(input)).toBe(0)
+describe("input empty string", () => {
+  test(" '' add to equal 0 ", () => {
+    input = ''
+      const stringCalculator = new StringCalculator(input);
+      expect(stringCalculator.add()).toBe(0)
+  })  
+})
+
+describe("throw error if input contains negative values", () => {
+  test(" '1,-2,-3,4,-3,-2' to throw Negatives not allowed at -2,-3,-3,-2 ", () => {
+    input = '1,-2,-3,4,-3,-2'
+    const stringCalculator = new StringCalculator(input);
+    expect(() => stringCalculator.checkCustomDelimiters()).toThrow()
+  })  
 })
