@@ -1,21 +1,27 @@
 const stringCalculator = (input) => {
-  if (typeof input !== 'string') throw new Error(`Input must be a string`);
+  if (typeof input !== 'string') throw new Error('Input must be a string');
 
-  // customer delimiter?
+  // customer delimiter(s)?
   if (input.substring(0, 2) === '//') {
-    // grab delimiter before new line
-    let [ delimiter, parsedInput ] = [ 
+    // grab delimiter(s) before new line
+    let [ delimiters, parsedInput ] = [ 
       input.substring(2).split(/\r\n|\n|\r/)[0], 
       input.substring(2).split(/\r\n|\n|\r/)[1] 
     ];
-    return add(parsedInput, delimiter);
+    return add(parsedInput, delimiters);
   } else return add(input)
   
-  function add(str, delimiter = ',') {
+  function add(str, delimiters = ',') {
     let negativesCounter = [];
 
+    // multiple delimiters?
+    if (delimiters !== ',') {
+      delimiters = delimiters.replace(',', '');
+      delimiters = new RegExp(`[${delimiters}]`)
+    }
+
     // separate and convert values to numbers
-    let subStrings = str.split(delimiter).map( Number );
+    let subStrings = str.split(delimiters).map( Number );
     
     // check for <1000 and negatives
     subStrings = subStrings.filter(function(item) {
@@ -34,5 +40,5 @@ const stringCalculator = (input) => {
     return sum;
   }
 }
-stringCalculator('1,2,3')
+
 module.exports = stringCalculator;
